@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 player.roundScore = 0
             # If not all the dice are zero, it's not the end of a round
             else:
-                if valid:
+                if valid and score is not 0:
                     # Collect the points
                     player.roundScore += score
                 else:
