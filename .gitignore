@@ -1,0 +1,5 @@
+*.docx
+**/.idea/
+**/.idea/*
+/.idea
+/.idea/*
