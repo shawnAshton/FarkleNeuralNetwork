@@ -8,6 +8,9 @@ class Player:
         self.roundScore = 0
 
     def freeze(self, frozen):
+        """
+        randomly freezes valid dice, so that they will not be rolled again
+        """
         freeze_dice = []
         for i in range(6):
             if frozen[i] is 1:
@@ -21,12 +24,12 @@ class Game:
     def __init__(self):
         self.dice = []
         # Start of a game, so everything is valid
-        self.frozen = [1, 1, 1, 1, 1, 1]
+        self.frozen = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
 
     def randomize_dice(self):
         """
         Randomize a list of six dice.
-        Ignore those dice that are marked as to be ignored
+        Ignore those dice that are marked as frozen
         "Frozen" dice are simply marked as zeros.
         """
         self.dice = []
@@ -67,7 +70,7 @@ class Game:
             sum += count[1] * 100
         return sum
 
-    def freeze(self, frozen):
+    def is_valid_move(self, frozen):
         """
         This determines if removing a certain die is valid or not
         Frozen must be a list of size six. It must consist of only 0 or 1
@@ -117,7 +120,7 @@ if __name__ == "__main__":
         for i in range(100):
             farkle.randomize_dice()
             score = farkle.score_roll()
-            valid = farkle.freeze(player.freeze(farkle.frozen))
+            valid = farkle.is_valid_move(player.freeze(farkle.frozen))
 
             # Triggers if all the dice zero
             if not any(farkle.frozen):
