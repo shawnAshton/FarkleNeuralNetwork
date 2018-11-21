@@ -1,10 +1,10 @@
 import game
-import player
+import greedy_player
 
 
 if __name__ == "__main__":
     farkle = game.Game()
-    player = player.Player()
+    player = greedy_player.Player()
     average = 0
     for j in range(100):
         score = 0
