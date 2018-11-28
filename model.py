@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 class Model:
     def __init__(self, num_states, num_actions, batch_size):
         self._num_states = num_states

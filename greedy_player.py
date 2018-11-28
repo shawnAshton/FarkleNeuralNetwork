@@ -2,6 +2,7 @@ import random
 import model
 import memory
 
+
 class Player:
     def __init__(self):
         self.gameScore = 0

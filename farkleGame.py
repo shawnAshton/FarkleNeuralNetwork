@@ -24,7 +24,7 @@ if __name__ == "__main__":
                     player.roundScore += score
                 else:
                     # Until we fail
-                    player.roundScore = 0
+                    player.roundScore = -1000
         print(player.totalScore)
         average += player.totalScore
         player.totalScore = 0
