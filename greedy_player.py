@@ -24,6 +24,11 @@ class Player:
 
     def train(self):
         # use the memory to train the Neural Network
+            #  INPUTS
+            #  current_state (array)
+            #  our frozen_dice (array of zero and ones)
+
+            #  back propagate the score
         return 4
 
     def decide(self, current_state, frozen_dice):
