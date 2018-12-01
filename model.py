@@ -1,7 +1,9 @@
 import tensorflow as tf
 
-
+# this is our Neural Network...  the players will use an instance of this class...
 class Model:
+    #  example... position and velocity is 2 for numstates....thats why numstates is 12
+    #  num actions is num outputs...
     def __init__(self, num_states, num_actions, batch_size):
         self._num_states = num_states
         self._num_actions = num_actions

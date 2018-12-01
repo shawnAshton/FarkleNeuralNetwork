@@ -7,7 +7,7 @@ class Player:
     def __init__(self):
         self.gameScore = 0
         self.roundScore = 0
-        self.neuralNet = model.Model(6, 6, 6)
+        self.neuralNet = model.Model(13, 6, 6)
         self.memory = memory.Memory(1000)
 
     def freeze(self, frozen):
