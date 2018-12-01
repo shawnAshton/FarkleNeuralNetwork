@@ -22,8 +22,8 @@ class GameRunner:
                 roll_score = self.farkle.score_roll()
                 temp_memory = [self.farkle.dice, self.farkle.reRoll]
 
-                valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.reRoll))  # random pick..don't use brain
-                # valid = self.farkle.is_valid_move(self.player.decide(self.farkle.reRoll, self.farkle.dice))  # player... use brain
+                # valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.reRoll))  # random pick..don't use brain
+                valid = self.farkle.is_valid_move(self.player.decide(self.farkle.reRoll, self.farkle.dice, self.tensor_session))  # player... use brain
                 # Triggers if all the dice zero
                 if not any(self.farkle.reRoll):
                     self.player.gameScore += self.player.roundScore + roll_score
