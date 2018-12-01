@@ -6,7 +6,7 @@ class Game:
     def __init__(self):
         self.dice = []
         # Start of a game, so everything is valid
-        self.reroll = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
+        self.reRoll = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
 
     def randomize_dice(self):
         """
@@ -14,13 +14,14 @@ class Game:
         Ignore those dice that are marked as frozen
         "Frozen" dice are simply marked as zeros.
         """
-        self.dice = []
+        temp_dice = self.dice
 
+        self.dice = []
         for i in range(6):
-            if self.reroll[i] is 1:
+            if self.reRoll[i] is 1:
                 self.dice.append(random.randint(1, 6))
             else:
-                self.dice.append(0)
+                self.dice.append(temp_dice[i])
 
     def score_roll(self):
         """
@@ -33,24 +34,36 @@ class Game:
         :return:
         The score of the dice roll
         """
-        self.reroll
-        count = Counter(self.dice)
+        dice_to_keep = []
+        for i in range(len(self.dice)):
+            # print('dice at index i is:', i, self.dice[i])
+            if self.reRoll[i] == 0:
+                dice_to_keep.append(self.dice[i])
+        count = Counter(dice_to_keep)
         score = 0
-        if count[1] >= 3:
-            score += 1000
-            score += (count[1] - 3) * 100
-            score += count[5] * 50
-        elif count[5] >= 3:
-            score += 500
-            score += (count[5] - 3) * 50
-            score += count[1] * 100
-        elif count.most_common(1)[0][1] >= 3:
-            score += count.most_common(1)[0][0] * 100
-            score += count[1] * 100
-            score += count[5] * 50
-        else:
-            score += count[5] * 50
-            score += count[1] * 100
+        # print('THIS IS THE LENGHT', len(dice_to_keep))
+        if len(dice_to_keep) > 0:
+            if count[1] >= 3:
+                # print('A')
+                score += 1000
+                score += (count[1] - 3) * 100
+                score += count[5] * 50
+            elif count[5] >= 3:
+                # print('B')
+                score += 500
+                score += (count[5] - 3) * 50
+                score += count[1] * 100
+            elif count.most_common(1)[0][1] >= 3:
+                # print('C')
+                score += count.most_common(1)[0][0] * 100
+                score += count[1] * 100
+                score += count[5] * 50
+            else:
+                # print('D')
+                score += count[5] * 50
+                score += count[1] * 100
+        # print('MY SCORE IS NOW', score)
+        # print('MY DICE', dice_to_keep)
         return score
 
     def is_valid_move(self, frozen):
@@ -61,11 +74,11 @@ class Game:
         :return:
         """
         count_of_frozen = Counter(frozen)
-        count_of_already_frozen = Counter(self.reroll)
+        count_of_already_frozen = Counter(self.reRoll)
 
         if count_of_frozen[0] == 6:
             # Everything is frozen, so start a new round
-            self.reroll = [1, 1, 1, 1, 1, 1]
+            self.reRoll = [1, 1, 1, 1, 1, 1]
             return True
         elif count_of_frozen[0] > count_of_already_frozen[0]:
             # Is there a triple? What number is it?
@@ -81,12 +94,12 @@ class Game:
             for i in range(len(frozen)):
                 # Freeze the selected ones or fives from being played
                 if (self.dice[i] is 1 or self.dice[i] is 5) and frozen[i] is 0:
-                    self.reroll[i] = 0
+                    self.reRoll[i] = 0
                     valid = True
                 # Freeze triples from being played
                 if die is not 0 and self.dice[i] is die and counter < 3:
                     counter += 1
-                    self.reroll[i] = 0
+                    self.reRoll[i] = 0
                     valid = True
             return valid
         else:

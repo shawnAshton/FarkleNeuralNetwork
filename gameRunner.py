@@ -2,7 +2,6 @@ import rules
 import greedy_player
 import tensorflow as tf
 
-
 class GameRunner:
     def __init__(self, player, not_greedy_player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
         self.player = player
@@ -21,12 +20,12 @@ class GameRunner:
             for i in range(100):
                 self.farkle.randomize_dice()
                 roll_score = self.farkle.score_roll()
-                temp_memory = [self.farkle.dice, self.farkle.frozen]
+                temp_memory = [self.farkle.dice, self.farkle.reRoll]
 
-                valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.frozen))  # random pick..don't use brain
-                # valid = self.farkle.is_valid_move(self.player.decide(self.farkle.frozen, self.farkle.dice))  # player... use brain
+                valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.reRoll))  # random pick..don't use brain
+                # valid = self.farkle.is_valid_move(self.player.decide(self.farkle.reRoll, self.farkle.dice))  # player... use brain
                 # Triggers if all the dice zero
-                if not any(self.farkle.frozen):
+                if not any(self.farkle.reRoll):
                     self.player.gameScore += self.player.roundScore + roll_score
                     self.player.roundScore = 0
                 # If not all the dice are zero, it's not the end of a round
@@ -40,8 +39,7 @@ class GameRunner:
                         self.player.roundScore = 0
                         roll_score = -3000
                 temp_memory.append(roll_score)
-                # self.player
-            # if self.player.gameScore:
+
             print(self.player.gameScore)
             average += self.player.gameScore
             loop_count += 1
