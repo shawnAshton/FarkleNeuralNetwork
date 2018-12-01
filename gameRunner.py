@@ -20,25 +20,34 @@ class GameRunner:
         while playing:
             for i in range(100):
                 self.farkle.randomize_dice()
-                score = self.farkle.score_roll()
-                valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.frozen))
+                roll_score = self.farkle.score_roll()
+                temp_memory = [self.farkle.dice, self.farkle.frozen]
+
+                valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.frozen))  # random pick..don't use brain
+                valid = self.farkle.is_valid_move(self.player.decide(self.farkle.frozen, self.farkle.dice))  # player... use brain
                 # Triggers if all the dice zero
                 if not any(self.farkle.frozen):
-                    self.player.gameScore += self.player.roundScore + score
+                    self.player.gameScore += self.player.roundScore + roll_score
                     self.player.roundScore = 0
                 # If not all the dice are zero, it's not the end of a round
                 else:
-                    if valid and score is not 0:
+                    if valid and roll_score is not 0:
                         # Collect the points
-                        self.player.roundScore += score
+
+                        self.player.roundScore += roll_score
                     else:
                         # Until we fail
                         self.player.roundScore = 0
-            if self.player.gameScore:
-                print(self.player.gameScore)
-                average += self.player.gameScore
-                loop_count += 1
+                        roll_score = -3000
+                temp_memory.append(roll_score)
+                # self.player
+            # if self.player.gameScore:
+            #     print(self.player.gameScore)
+            #     average += self.player.gameScore
+            #     loop_count += 1
+            #
+            #     # self.player.memory.add_sample()
             self.player.gameScore = 0
             if loop_count > 100:
                 playing = False
-        print("Average score per game: " + str(average / loop_count))
+        print("Average roll_score per game: " + str(average / loop_count))
