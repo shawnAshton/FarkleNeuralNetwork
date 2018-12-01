@@ -6,7 +6,7 @@ class Game:
     def __init__(self):
         self.dice = []
         # Start of a game, so everything is valid
-        self.frozen = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
+        self.reroll = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
 
     def randomize_dice(self):
         """
@@ -17,7 +17,7 @@ class Game:
         self.dice = []
 
         for i in range(6):
-            if self.frozen[i] is 1:
+            if self.reroll[i] is 1:
                 self.dice.append(random.randint(1, 6))
             else:
                 self.dice.append(0)
@@ -33,6 +33,7 @@ class Game:
         :return:
         The score of the dice roll
         """
+        self.reroll
         count = Counter(self.dice)
         score = 0
         if count[1] >= 3:
@@ -60,11 +61,11 @@ class Game:
         :return:
         """
         count_of_frozen = Counter(frozen)
-        count_of_already_frozen = Counter(self.frozen)
+        count_of_already_frozen = Counter(self.reroll)
 
         if count_of_frozen[0] == 6:
             # Everything is frozen, so start a new round
-            self.frozen = [1, 1, 1, 1, 1, 1]
+            self.reroll = [1, 1, 1, 1, 1, 1]
             return True
         elif count_of_frozen[0] > count_of_already_frozen[0]:
             # Is there a triple? What number is it?
@@ -80,12 +81,12 @@ class Game:
             for i in range(len(frozen)):
                 # Freeze the selected ones or fives from being played
                 if (self.dice[i] is 1 or self.dice[i] is 5) and frozen[i] is 0:
-                    self.frozen[i] = 0
+                    self.reroll[i] = 0
                     valid = True
                 # Freeze triples from being played
                 if die is not 0 and self.dice[i] is die and counter < 3:
                     counter += 1
-                    self.frozen[i] = 0
+                    self.reroll[i] = 0
                     valid = True
             return valid
         else:

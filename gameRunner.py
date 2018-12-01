@@ -24,7 +24,7 @@ class GameRunner:
                 temp_memory = [self.farkle.dice, self.farkle.frozen]
 
                 valid = self.farkle.is_valid_move(self.player.freeze(self.farkle.frozen))  # random pick..don't use brain
-                valid = self.farkle.is_valid_move(self.player.decide(self.farkle.frozen, self.farkle.dice))  # player... use brain
+                # valid = self.farkle.is_valid_move(self.player.decide(self.farkle.frozen, self.farkle.dice))  # player... use brain
                 # Triggers if all the dice zero
                 if not any(self.farkle.frozen):
                     self.player.gameScore += self.player.roundScore + roll_score
@@ -42,11 +42,11 @@ class GameRunner:
                 temp_memory.append(roll_score)
                 # self.player
             # if self.player.gameScore:
-            #     print(self.player.gameScore)
-            #     average += self.player.gameScore
-            #     loop_count += 1
-            #
-            #     # self.player.memory.add_sample()
+            print(self.player.gameScore)
+            average += self.player.gameScore
+            loop_count += 1
+
+                # self.player.memory.add_sample()
             self.player.gameScore = 0
             if loop_count > 100:
                 playing = False
