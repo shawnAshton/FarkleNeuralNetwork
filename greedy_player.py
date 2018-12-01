@@ -1,6 +1,7 @@
 import random
 import model
 import memory
+import numpy as np
 
 class Player:
     def __init__(self):
@@ -31,8 +32,13 @@ class Player:
             #  back propagate the score
         return 4
 
-    def decide(self, current_state, frozen_dice):
+    def decide(self, current_state, frozen_dice, sess):
         # greedy inputs...
+        state = current_state + frozen_dice
+        state = np.array(state)
+        # something = self.neuralNet.predict_one(state, sess)
+        # print(something)
+        # print(type(something))
             #  current_state (array)
             #  our frozen_dice (array of zero and ones)
 
@@ -41,4 +47,4 @@ class Player:
 
         # outputs...
             # array of 6 zeros and ones...
-        return 4
+        return [0, 0, 0, 0, 0, 0]

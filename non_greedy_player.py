@@ -28,7 +28,7 @@ class Player:
         return 4
 
     def decide(self, current_state, frozen_dice, round_score):
-        # non- greedy inputs...
+        #  non- greedy inputs...
             #  current_state
             #  our frozen_dice
             #  round score
@@ -38,4 +38,5 @@ class Player:
 
         # outputs...
             # array of 6 zeros and ones...
-        return 4
+        # return frozen dice
+        return [0,0,0,0,0,0]

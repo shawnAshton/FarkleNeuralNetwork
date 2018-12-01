@@ -23,6 +23,7 @@ class Model:
 
     def _define_model(self):
         self._states = tf.placeholder(shape=[None, self._num_states], dtype=tf.float32)
+        print('MY STATE IS THIS THINGY: ', type(self._states))
         self._q_s_a = tf.placeholder(shape=[None, self._num_actions], dtype=tf.float32)
 
         # Create dense layers
