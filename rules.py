@@ -23,7 +23,23 @@ class Game:
             else:
                 self.dice.append(temp_dice[i])
 
-    def score_roll(self):
+    def randomize_fake_dice(self, dice, reRoll):
+        """
+        Randomize a list of six dice.
+        Ignore those dice that are marked as frozen
+        "Frozen" dice are simply marked as zeros.
+        """
+        temp_dice = dice
+
+        dice = []
+        for i in range(6):
+            if reRoll[i] is 1:
+                dice.append(random.randint(1, 6))
+            else:
+                dice.append(temp_dice[i])
+        return dice
+
+    def score_roll(self, dice, reRoll):
         """
         Scores the dice.
         1 = 100
@@ -35,10 +51,10 @@ class Game:
         The score of the dice roll
         """
         dice_to_keep = []
-        for i in range(len(self.dice)):
+        for i in range(len(dice)):
             # print('dice at index i is:', i, self.dice[i])
-            if self.reRoll[i] == 0:
-                dice_to_keep.append(self.dice[i])
+            if reRoll[i] == 0:
+                dice_to_keep.append(dice[i])
         count = Counter(dice_to_keep)
         score = 0
         # print('THIS IS THE LENGHT', len(dice_to_keep))

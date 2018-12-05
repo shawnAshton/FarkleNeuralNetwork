@@ -10,7 +10,7 @@ class Model:
         self._batch_size = batch_size
 
         # Define the placeholders
-        self._states = None
+            self._states = None
         self._actions = None
 
         # The output operations
@@ -35,6 +35,7 @@ class Model:
         self._var_init = tf.global_variables_initializer()
 
     def predict_one(self, state, sess):
+        print("IM GETTING INTO THIS FUNCTION")
         return sess.run(self._logits, feed_dict={self._states: state.reshape(1, self._num_states)})
 
     def predict_batch(self, states, sess):
