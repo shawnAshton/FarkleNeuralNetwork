@@ -3,10 +3,9 @@ import greedy_player
 import tensorflow as tf
 
 class GameRunner:
-    def __init__(self, player, not_greedy_player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
+    def __init__(self, player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
         self.player = player
         self.farkle = farkle
-        self.not_greedy_player = not_greedy_player
         self.tensor_session = tensor_session
         self.learning_rate_decay = learning_rate_decay
         self.learning_rate_start = learning_rate_start
@@ -22,7 +21,7 @@ class GameRunner:
                 roll_score = self.farkle.score_roll(self.farkle.dice, self.farkle.reRoll)
                 temp_memory = [self.farkle.dice, self.farkle.reRoll]
                 reRoll = self.player.decide(self.farkle.reRoll, self.farkle.dice, self.tensor_session)
-                if all(reRoll) == 0:
+                if not reRoll.any():
                     playing = False
                     break
                 fake_dice_roll = self.farkle.randomize_fake_dice(self.farkle.dice, reRoll)

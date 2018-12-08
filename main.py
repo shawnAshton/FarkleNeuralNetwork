@@ -13,6 +13,8 @@ if __name__ == "__main__":
     learning_rate_min = 0.1
 
     with tf.Session() as tensor_session:
+        init = tf.global_variables_initializer()
+        tensor_session.run(init)
         runner = gameRunner.GameRunner(player, farkle, tensor_session,
                                            learning_rate_decay, learning_rate_start, learning_rate_min)
         runner.run()
