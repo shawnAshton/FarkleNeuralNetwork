@@ -13,6 +13,8 @@ class Model:
         self._states = None
         self._actions = None
 
+        self._i = 0
+
         # The output operations
         self._logits = None
         self._optimizer = None
@@ -25,7 +27,7 @@ class Model:
         self._states = tf.placeholder(shape=[None, self._num_states], dtype=tf.float32)
         print('MY STATE IS THIS THINGY: ', type(self._states))
         self._q_s_a = tf.placeholder(shape=[None, self._num_actions], dtype=tf.float32)
-
+        print(self._states)
         # Create dense layers
         fc1 = tf.layers.dense(self._states, 64, activation=tf.nn.relu)
         fc2 = tf.layers.dense(fc1, 64, activation=tf.nn.relu)
@@ -35,7 +37,10 @@ class Model:
         self._var_init = tf.global_variables_initializer()
 
     def predict_one(self, state, sess):
-        return sess.run(self._logits, feed_dict={self._states: state.reshape(1, self._num_states)})
+
+        outputs = sess.run(self._logits, feed_dict={self._states: state.reshape(1, self._num_states)})
+        print(outputs)
+        return outputs
 
     def predict_batch(self, states, sess):
         return sess.run(self._logits, feed_dict={self._states: states})

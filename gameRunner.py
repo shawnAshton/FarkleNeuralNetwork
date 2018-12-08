@@ -3,10 +3,9 @@ import greedy_player
 import tensorflow as tf
 
 class GameRunner:
-    def __init__(self, player, not_greedy_player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
+    def __init__(self, player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
         self.player = player
         self.farkle = farkle
-        self.not_greedy_player = not_greedy_player
         self.tensor_session = tensor_session
         self.learning_rate_decay = learning_rate_decay
         self.learning_rate_start = learning_rate_start
@@ -44,7 +43,9 @@ class GameRunner:
             average += self.player.gameScore
             loop_count += 1
 
-                # self.player.memory.add_sample()
+            self.player.memory.add_sample(temp_memory)
+
+
             self.player.gameScore = 0
             if loop_count > 100:
                 playing = False

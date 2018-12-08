@@ -23,7 +23,7 @@ class Game:
             else:
                 self.dice.append(temp_dice[i])
 
-    def score_roll(self):
+    def score_roll(self, dice, reRoll):
         """
         Scores the dice.
         1 = 100
@@ -35,7 +35,7 @@ class Game:
         The score of the dice roll
         """
         dice_to_keep = []
-        for i in range(len(self.dice)):
+        for i in range(len(dice)):
             # print('dice at index i is:', i, self.dice[i])
             if self.reRoll[i] == 0:
                 dice_to_keep.append(self.dice[i])

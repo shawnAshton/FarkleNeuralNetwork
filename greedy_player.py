@@ -10,6 +10,7 @@ class Player:
         self.roundScore = 0
         self.neuralNet = model.Model(12, 6, 6)
         self.memory = memory.Memory(1000)
+        self._i = 0
 
     def freeze(self, frozen):
         """
@@ -35,17 +36,21 @@ class Player:
 
     def decide(self, current_state, frozen_dice, sess):
         # greedy inputs...
-        state = current_state + frozen_dice
-        state = np.array(state)
-        # something = self.neuralNet.predict_one(state, sess)
-        # print(something)
-        # print(type(something))
-            #  current_state (array)
-            #  our frozen_dice (array of zero and ones)
+        if self._i < 1000:
+            self._i += 1
+            return self.freeze(frozen_dice)
+        else:
+            state = current_state + frozen_dice
+            state = np.array(state)
+            something = self.neuralNet.predict_one(state, sess)
+            # print(something)
+            # print(type(something))
+                #  current_state (array)
+                #  our frozen_dice (array of zero and ones)
 
-        # use the neural net to decide what to do..
-            # create NeuralNet
+            # use the neural net to decide what to do..
+                # create NeuralNet
 
-        # outputs...
-            # array of 6 zeros and ones...
-        return [0, 0, 0, 0, 0, 0]
+            # outputs...
+                # array of 6 zeros and ones...
+            return [0, 0, 0, 0, 0, 0]
