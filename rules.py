@@ -89,35 +89,51 @@ class Game:
         :param frozen:
         :return:
         """
-        count_of_frozen = Counter(frozen)
-        count_of_already_frozen = Counter(self.reRoll)
 
-        if count_of_frozen[0] == 6:
-            # Everything is frozen, so start a new round
+        count_of_player_frozen = Counter(frozen)
+        count_of_game_frozen = Counter(self.reRoll)
+
+        # Special case: Restarting round
+        if not any(frozen):
             self.reRoll = [1, 1, 1, 1, 1, 1]
             return True
-        elif count_of_frozen[0] > count_of_already_frozen[0]:
-            # Is there a triple? What number is it?
-            count = Counter(self.dice)
-            die = 0
-            if count.most_common(1)[0][1] >= 3:
-                die = count.most_common(1)[0][0]
 
-            counter = 0
-            # Is this a valid move?
-            valid = False
-            # We might have a valid turn, double check that points are being frozen
-            for i in range(len(frozen)):
-                # Freeze the selected ones or fives from being played
-                if (self.dice[i] is 1 or self.dice[i] is 5) and frozen[i] is 0:
-                    self.reRoll[i] = 0
-                    valid = True
-                # Freeze triples from being played
-                if die is not 0 and self.dice[i] is die and counter < 3:
-                    counter += 1
-                    self.reRoll[i] = 0
-                    valid = True
-            return valid
+        # obvious false....
+        if count_of_player_frozen[0] <= count_of_game_frozen[0]:
+            return False
         else:
-            # The only two valid scenarios are above, so this is false
+            # now we see if it freezes the same stuff as last time... if it doesn't it is an error
+            just_frozen = []
+            for i, gameFrozen in enumerate(self.reRoll):
+                if gameFrozen == 0:
+                    #  if gameFrozen is zero.... below BETTER be frozen
+                    if frozen[i] != 0:
+                        return False
+                elif gameFrozen == 1 and frozen[i] == 0:
+                    just_frozen.append(self.dice[i])
+
+            all_frozen = []
+            for i, die in enumerate(frozen):
+                if die is 0:
+                    all_frozen.append(self.dice[i])
+
+            triples = Counter(all_frozen)
+
+            # did the player decide to freeze some points? points that were additional to what was already frozen?
+            for i, gameFrozen in enumerate(self.reRoll):
+                # if game frozen is not 0... worry about the index......
+                if gameFrozen != 0:
+                    # this was just FROZEN is it a scoring dice??
+                    if frozen[i] == 0:
+                        if self.dice[i] == 1 or self.dice[i] == 5:
+                            self.reRoll = frozen
+                            return True
+
+            # Check to see if we have a triple
+            for die in just_frozen:
+                if triples[die] >= 3:
+                    self.reRoll = frozen
+                    return True
+
+            # What do we do here? Do we force rules?
             return False

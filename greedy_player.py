@@ -7,8 +7,8 @@ class Player:
     def __init__(self):
         self.gameScore = 0
         self.roundScore = 0
-        self.neuralNet = model.Model(12, 6, 6)
-        self.memory = memory.Memory(800)
+        self.neuralNet = model.Model(12, 6, 500)
+        self.memory = memory.Memory(80000)
 
     def freeze(self, frozen):
         """
@@ -26,46 +26,45 @@ class Player:
     def train(self, sess):
         # note: model = nn
         batch = self.memory.sample(self.neuralNet.batch_size) # samples your memory... then trains based on what it knows...
-        # states = np.array([val[0] for val in batch])
-        # next_states = np.array([(np.zeros(self._model.num_states)
-        #                          if val[3] is None else val[3]) for val in batch])
-        # q_s_a = self._model.predict_batch(states, self._sess)
-        # q_s_a_d = self._model.predict_batch(next_states, self._sess)
+
         inputs = np.zeros((len(batch), self.neuralNet.num_states))
         outputs = np.zeros((len(batch), self.neuralNet.num_actions))
         for i, b in enumerate(batch):
             state, frozen_dice, cScore, pScore = b[0], b[1], b[2], b[3]
             inputs[i] = state + frozen_dice
-
+            single_target = [1, 1, 1, 1, 1, 1]
             if pScore <= cScore:
                 outputs[i] = [0, 0, 0, 0, 0, 0]
             else:
             #     find the number of tings we can actually reroll... + 1
-                count_frozen_die = 0
-                for die in frozen_dice:
-                    if die is 0:
-                        count_frozen_die += 1
-                count_frozen_die += 1
-                amount_to_reroll = 6 - count_frozen_die
-                single_target = [1,1,1,1,1,1]
-                count_of_target_frozen = 0
-                for j, die in enumerate(state):
-                    if frozen_dice[j] == 0:
-                        single_target[j] = 0
-                        count_of_target_frozen += 1
-                    elif die is 1 and count_of_target_frozen < amount_to_reroll:
-                        single_target[j] = 0
-                        count_of_target_frozen += 1
+            #     count_frozen_die = 0
+            #     for die in frozen_dice:
+            #         if die is 0:
+            #             count_frozen_die += 1
+            #     count_frozen_die += 1
+            #     print("Frozen", count_frozen_die)
+            #     count_of_target_frozen = 0
 
                 for j, die in enumerate(state):
-                    if frozen_dice[j] == 0:
+                    if state[j] is 1:
                         single_target[j] = 0
-                        count_of_target_frozen += 1
-                    elif die is 5 and count_of_target_frozen < amount_to_reroll:
+                    if state[j] is 5:
                         single_target[j] = 0
-                        count_of_target_frozen += 1
+
+                # for j, die in enumerate(state):
+                #     if state[j] is 5 and count_of_target_frozen <= count_frozen_die:
+                #         single_target[j] = 0
+                #         count_of_target_frozen += 1
+
+                # print("Target frozen in memory", count_of_target_frozen)
+                # for j, die in enumerate(single_target):
+                #     if single_target[j] == 1:
+                #         single_target[j] = random.randint(0, 1)
+
                 outputs[i] = single_target
-
+            # print("Dice in memory", state)
+            # print("Current roll in memory", frozen_dice)
+            # print("Target roll in memory", outputs[i])
         #    THINKING OF current scores and potential scores... if statements..? looking at the replay function of 2nd link
         #  also... we are here cause we think we need to add to memory b4 we can decide...
         # pytorch..?
@@ -85,15 +84,22 @@ class Player:
     def decide(self, current_state, frozen_dice, sess):
         # greedy inputs...
         state = current_state + frozen_dice
+        print(type(state))
+        print(len(state))
+        # print("Current_state", current_state, "BlockA")
+        # print("frozen_dice", frozen_dice, "BlockB")
         state = np.array(state)
-        # Predict returns it in [[]] form. Get the 0th index to get just [] form.
-        something = self.neuralNet.predict_one(state, sess)[0]
-        print(something)
-        # We get decimals, round them to 0 or 1
-        for i, die in enumerate(something):
-            something[i] = round(something[i])
+        print(type(state))
+        print(state)
 
-        print(something)
+
+        # Predict returns it in [[]] form. Get the 0th index to get just [] form.
+        predicted_reRoll = self.neuralNet.predict_one(state, sess)[0]
+
+        # We get decimals, round them to 0 or 1
+        for i, die in enumerate(predicted_reRoll):
+            predicted_reRoll[i] = round(predicted_reRoll[i])
+
         # print(type(something))
             #  current_state (array)
             #  our frozen_dice (array of zero and ones)
@@ -103,4 +109,4 @@ class Player:
 
         # outputs...
             # array of 6 zeros and ones...
-        return something
+        return predicted_reRoll

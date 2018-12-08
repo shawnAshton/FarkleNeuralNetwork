@@ -17,7 +17,11 @@ class Memory:
 
     def sample(self, num_samples):
         if num_samples > len(self._samples): # if you want to sample more than I know....
-            return random.sample(self._samples, len(self._samples))  # i'll tell ya everything...
+            temp = random.sample(self._samples, len(self._samples))  # i'll tell ya everything...
+            # print("temp", temp)
+            return temp
         else:
-            return random.sample(self._samples, num_samples)         # i'll give ya what ya want
+            temp = random.sample(self._samples, num_samples)         # i'll give ya what ya want
+            # print("else temp", temp)
+            return temp
 
