@@ -10,7 +10,7 @@ class Memory:
         self._max_memory = max_memory
         self._samples = []
 
-    def add_sample(self, sample):  # state, and Round score
+    def add_sample(self, sample):  # state, frozen dice, cscore, pscore
         self._samples.append(sample)
         if len(self._samples) > self._max_memory:  # if we don't have space.. pop some memory...
             self._samples.pop(0)
