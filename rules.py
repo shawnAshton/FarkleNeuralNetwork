@@ -7,6 +7,7 @@ class Game:
         self.dice = []
         # Start of a game, so everything is valid
         self.reRoll = [1, 1, 1, 1, 1, 1]  # frozen... 1 means we can roll that dice
+        self.new_round = False
 
     def randomize_dice(self):
         """
@@ -88,6 +89,7 @@ class Game:
         # Special case: Restarting round
         if not any(frozen):
             self.reRoll = [1, 1, 1, 1, 1, 1]
+            self.new_round = True
             return True
 
         # obvious false....
@@ -115,14 +117,18 @@ class Game:
                 if game_die != 0 and frozen[i] == 0:
                     # this was just FROZEN is it a scoring dice??
                     if self.dice[i] == 1 or self.dice[i] == 5:
-                        self.reRoll = frozen
                         return True
 
             # Check to see if we have a triple
             for die in just_frozen:
                 if triples[die] >= 3:
-                    self.reRoll = frozen
                     return True
 
         # What do we do here? Do we force rules?
         return False
+
+    def set_reRoll(self, frozen):
+        self.reRoll = frozen
+
+    def randomize_frozen(self):
+        return [random.randint(0,1) for i in range(6)]
