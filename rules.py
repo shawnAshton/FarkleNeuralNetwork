@@ -50,36 +50,28 @@ class Game:
         :return:
         The score of the dice roll
         """
-        dice_to_keep = []
+        dice_to_score = []
         for i in range(len(dice)):
-            # print('dice at index i is:', i, self.dice[i])
             if reRoll[i] == 0:
-                dice_to_keep.append(dice[i])
-        count = Counter(dice_to_keep)
+                dice_to_score.append(dice[i])
+        count = Counter(dice_to_score)
         score = 0
-        # print('THIS IS THE LENGHT', len(dice_to_keep))
-        if len(dice_to_keep) > 0:
+        if len(dice_to_score) > 0:
             if count[1] >= 3:
-                # print('A')
                 score += 1000
                 score += (count[1] - 3) * 100
                 score += count[5] * 50
             elif count[5] >= 3:
-                # print('B')
                 score += 500
                 score += (count[5] - 3) * 50
                 score += count[1] * 100
             elif count.most_common(1)[0][1] >= 3:
-                # print('C')
                 score += count.most_common(1)[0][0] * 100
                 score += count[1] * 100
                 score += count[5] * 50
             else:
-                # print('D')
                 score += count[5] * 50
                 score += count[1] * 100
-        # print('MY SCORE IS NOW', score)
-        # print('MY DICE', dice_to_keep)
         return score
 
     def is_valid_move(self, frozen):
@@ -104,30 +96,27 @@ class Game:
         else:
             # now we see if it freezes the same stuff as last time... if it doesn't it is an error
             just_frozen = []
-            for i, gameFrozen in enumerate(self.reRoll):
-                if gameFrozen == 0:
-                    #  if gameFrozen is zero.... below BETTER be frozen
-                    if frozen[i] != 0:
-                        return False
-                elif gameFrozen == 1 and frozen[i] == 0:
+            for i, game_die in enumerate(self.reRoll):
+                #  if gameFrozen is zero.... below BETTER be frozen
+                if game_die == 0 and frozen[i] != 0:
+                    return False
+                elif game_die == 1 and frozen[i] == 0:
                     just_frozen.append(self.dice[i])
 
             all_frozen = []
             for i, die in enumerate(frozen):
-                if die is 0:
+                if die == 0:
                     all_frozen.append(self.dice[i])
 
             triples = Counter(all_frozen)
-
             # did the player decide to freeze some points? points that were additional to what was already frozen?
-            for i, gameFrozen in enumerate(self.reRoll):
+            for i, game_die in enumerate(self.reRoll):
                 # if game frozen is not 0... worry about the index......
-                if gameFrozen != 0:
+                if game_die != 0 and frozen[i] == 0:
                     # this was just FROZEN is it a scoring dice??
-                    if frozen[i] == 0:
-                        if self.dice[i] == 1 or self.dice[i] == 5:
-                            self.reRoll = frozen
-                            return True
+                    if self.dice[i] == 1 or self.dice[i] == 5:
+                        self.reRoll = frozen
+                        return True
 
             # Check to see if we have a triple
             for die in just_frozen:
@@ -135,5 +124,5 @@ class Game:
                     self.reRoll = frozen
                     return True
 
-            # What do we do here? Do we force rules?
-            return False
+        # What do we do here? Do we force rules?
+        return False
