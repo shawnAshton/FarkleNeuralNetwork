@@ -69,7 +69,7 @@ class GameRunner:
             self.player.gameScore = 0
             game_count += 1
 
-            if game_count > 500:
+            if game_count > 1000:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
         plt.plot(average_round_score_per_game)
@@ -88,3 +88,7 @@ class GameRunner:
         # plot.xlabel("Turn")
         # plot.show()
         print("Average roll_score per game: " + str(total_score / (game_count * 100)))
+        with open("Output.csv", 'w') as file:
+            wr = csv.writer(file, delimiter=',', dialect='excel')
+            wr.writerow(average_round_score_per_game)
+            wr.writerow(plot_game_score)
