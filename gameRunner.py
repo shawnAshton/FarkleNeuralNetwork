@@ -1,7 +1,8 @@
 import rules
 import greedy_player
 import tensorflow as tf
-import matplotlib.pyplot as plot
+import csv
+import matplotlib.pyplot as plt
 
 class GameRunner:
     def __init__(self, player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
@@ -14,11 +15,14 @@ class GameRunner:
 
     def run(self):
         playing = True
-        loop_count = 0
+        game_count = 0
         total_score = 0
+        max_game_score = 10000
+        number_rounds = 0
         plot_game_score = []
+        plot_number_rounds = []
         while playing:
-            for i in range(100):
+            while self.player.gameScore < max_game_score:
                 self.farkle.randomize_dice()
                 valid = False
                 # The player makes a decision:
@@ -39,12 +43,13 @@ class GameRunner:
 
                 # Triggers if all the dice zero
                 if self.farkle.new_round:
-                    self.player.gameScore += self.player.roundScore + roll_score
+                    final_round_score = self.player.roundScore + roll_score
+                    self.player.gameScore += final_round_score
                     self.player.roundScore = 0
                     self.farkle.new_round = False
                 # If not all the dice are zero, it's not the end of a round
                 else:
-                    if valid and roll_score is not 0:
+                    if roll_score is not 0:
                         # Collect the points
                         self.player.roundScore += roll_score
                     else:
@@ -54,18 +59,32 @@ class GameRunner:
                 temp_memory.append(roll_score)
                 temp_memory.append(fake_score)
                 self.player.memory.add_sample(temp_memory)
+                number_rounds += 1
+            plot_number_rounds.append(number_rounds)
+            number_rounds = 0
             # WE NEED TO REPLAY AKA TRAIN
             self.player.train(self.tensor_session)
             total_score += self.player.gameScore
             plot_game_score.append(self.player.gameScore)
             self.player.gameScore = 0
-            loop_count += 1
+            game_count += 1
 
-            if loop_count > 1000:
+            if game_count > 500:
                 playing = False
-        plot.plot(plot_game_score)
-        plot.title("Game score over time")
-        plot.ylabel("Game Score")
-        plot.xlabel("Turn")
-        plot.show()
-        print("Average roll_score per game: " + str(total_score / (loop_count * 100)))
+        average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
+        plt.plot(average_round_score_per_game)
+        plt.title("Average round score per game")
+        plt.ylabel("Average Round Score")
+        plt.xlabel("Game Number")
+        plt.show()
+        plt.plot(plot_number_rounds)
+        plt.title("Number of Rounds per Game")
+        plt.ylabel("Number of Rounds")
+        plt.xlabel("Game Number")
+        plt.show()
+        # plot.plot(plot_game_score)
+        # plot.title("Game score over time")
+        # plot.ylabel("Game Score")
+        # plot.xlabel("Turn")
+        # plot.show()
+        print("Average roll_score per game: " + str(total_score / (game_count * 100)))

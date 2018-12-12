@@ -26,9 +26,10 @@ class Model:
         self._q_s_a = tf.placeholder(shape=[None, self.num_actions], dtype=tf.float32)
 
         # Create dense layers
-        fc1 = tf.layers.dense(self._states, 64, activation=tf.nn.relu)
-        fc2 = tf.layers.dense(fc1, 64, activation=tf.nn.relu)
-        self._logits = tf.layers.dense(fc2, self.num_actions, activation=tf.nn.sigmoid)
+        fc1 = tf.layers.dense(self._states, 128, activation=tf.nn.relu)
+        fc2 = tf.layers.dense(fc1, 128, activation=tf.nn.relu)
+        fc3 = tf.layers.dense(fc2, 128, activation=tf.nn.relu)
+        self._logits = tf.layers.dense(fc3, self.num_actions, activation=tf.nn.sigmoid)
         loss = tf.losses.mean_squared_error(self._q_s_a, self._logits)
         self._optimizer = tf.train.AdamOptimizer().minimize(loss)
         self._var_init = tf.global_variables_initializer()
