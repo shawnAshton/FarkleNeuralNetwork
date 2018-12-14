@@ -69,7 +69,7 @@ class GameRunner:
             self.player.gameScore = 0
             game_count += 1
 
-            if game_count > 1000:
+            if game_count > 500:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
         plt.plot(average_round_score_per_game)

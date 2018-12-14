@@ -61,17 +61,17 @@ class Game:
             if count[1] >= 3:
                 score += 1000
                 score += (count[1] - 3) * 100
-                score += count[5] * 50
-            elif count[5] >= 3:
+                score += count[2] * 50
+            elif count[2] >= 3:
                 score += 500
-                score += (count[5] - 3) * 50
+                score += (count[2] - 3) * 50
                 score += count[1] * 100
             elif count.most_common(1)[0][1] >= 3:
                 score += count.most_common(1)[0][0] * 100
                 score += count[1] * 100
-                score += count[5] * 50
+                score += count[2] * 50
             else:
-                score += count[5] * 50
+                score += count[2] * 50
                 score += count[1] * 100
         return score
 
