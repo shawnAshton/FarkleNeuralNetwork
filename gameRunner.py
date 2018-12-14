@@ -17,6 +17,10 @@ class GameRunner:
 
     def run(self):
         playing = True
+        count_of_same_predictions = 0
+        count_of_predictions_in_first_50_games = 0
+        count_of_predictions_in_last_50_games = 0
+        count_of_total_predictions = 0
         game_count = 0
         total_score = 0
         max_game_score = 10000
@@ -29,7 +33,16 @@ class GameRunner:
                 self.farkle.randomize_dice()
                 valid = False
                 # The player makes a decision:
+                reRoll_test = self.player.perfect_roll(self.farkle.dice)
                 reRoll = self.player.decide(self.farkle.dice, self.farkle.reRoll, self.tensor_session)
+                count_of_total_predictions += 1
+                if reRoll_test == reRoll:
+                    count_of_same_predictions += 1
+                if game_count < 50:
+                    count_of_predictions_in_first_50_games += 1
+                if game_count > 450:
+                    count_of_predictions_in_last_50_games += 1
+
                 while not valid:
                     valid = self.farkle.is_valid_move(reRoll)  # player... use brain
                     if any(reRoll):
@@ -74,10 +87,14 @@ class GameRunner:
             self.player.gameScore = 0
             game_count += 1
 
-            if game_count > 500:
+            if game_count >= 500:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
         # average_round_score_per_game = median(plot_game_score)
+        print("count_of_predictions_in_first_50_games: ", count_of_predictions_in_first_50_games)
+        print("count_of_predictions_in_last_50_games: ", count_of_predictions_in_last_50_games)
+        print("Count of same predictions is: ", count_of_same_predictions, " / ", count_of_total_predictions,
+              " or as a percent ", count_of_same_predictions / count_of_total_predictions * 100)
         print("median game score", median(plot_game_score))
         plt.plot(average_round_score_per_game)
         plt.title("Average round score per game")
@@ -94,5 +111,5 @@ class GameRunner:
         # plot.ylabel("Game Score")
         # plot.xlabel("Turn")
         # plot.show()
-        print("Average roll_score per game with NN: " + str(total_score / (game_count * 100)))
+        print("Average roll_score per game with NN: ", str(total_score / count_of_total_predictions), " the num of games played: ", game_count)
         print("median round score with NN", median(round_scores))

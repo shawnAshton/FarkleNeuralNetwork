@@ -19,6 +19,8 @@ class GameRunner:
         playing = True
         game_count = 0
         total_score = 0
+        count_of_same_predictions = 0
+        count_of_total_predictions = 0
         max_game_score = 10000
         number_rounds = 0
         plot_game_score = []
@@ -29,7 +31,11 @@ class GameRunner:
                 self.farkle.randomize_dice()
                 valid = False
                 # The player makes a decision:
+                reRoll_test = self.player.perfect_roll(self.farkle.dice)
                 reRoll = self.player.perfect_roll(self.farkle.dice)
+                count_of_total_predictions += 1
+                if reRoll_test == reRoll:
+                    count_of_same_predictions += 1
                 while not valid:
                     valid = self.farkle.is_valid_move(reRoll)  # player... use brain
                     if any(reRoll):
@@ -62,18 +68,18 @@ class GameRunner:
 
                 temp_memory.append(roll_score)
                 temp_memory.append(fake_score)
-                self.player.memory.add_sample(temp_memory)
+                # self.player.memory.add_sample(temp_memory)
                 number_rounds += 1
             plot_number_rounds.append(number_rounds)
             number_rounds = 0
             # WE NEED TO REPLAY AKA TRAIN
-            self.player.train(self.tensor_session)
+            # self.player.train(self.tensor_session)
             total_score += self.player.gameScore
             plot_game_score.append(self.player.gameScore)
             self.player.gameScore = 0
             game_count += 1
 
-            if game_count > 500:
+            if game_count >= 500:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
         print("median game score", median(plot_game_score))
@@ -92,5 +98,7 @@ class GameRunner:
         # plot.ylabel("Game Score")
         # plot.xlabel("Turn")
         # plot.show()
-        print("Average roll_score per game with perfect roll: " + str(total_score / (game_count * 100)))
+        print("Count of same predictions is: ", count_of_same_predictions, " / ", count_of_total_predictions,
+              " or as a percent ", count_of_same_predictions / count_of_total_predictions * 100)
+        print("Average roll_score per game with perfect roll: ", str(total_score / count_of_total_predictions), " the num of games played: ", game_count)
         print("median round score with perfect roll", median(round_scores))

@@ -47,7 +47,7 @@ class Player:
 
             # but should you really roll?
             single_target_count = Counter(single_target)
-            if single_target_count[1] < 2:
+            if single_target_count[1] < 0:
                 single_target = [0, 0, 0, 0, 0, 0]
         return single_target
 
