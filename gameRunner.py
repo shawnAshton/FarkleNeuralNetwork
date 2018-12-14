@@ -1,3 +1,5 @@
+from statistics import median
+
 import rules
 import greedy_player
 import tensorflow as tf
@@ -21,6 +23,7 @@ class GameRunner:
         number_rounds = 0
         plot_game_score = []
         plot_number_rounds = []
+        round_scores = []
         while playing:
             while self.player.gameScore < max_game_score:
                 self.farkle.randomize_dice()
@@ -44,9 +47,11 @@ class GameRunner:
                 # Triggers if all the dice zero
                 if self.farkle.new_round:
                     final_round_score = self.player.roundScore + roll_score
+                    round_scores.append(final_round_score)
                     self.player.gameScore += final_round_score
                     self.player.roundScore = 0
                     self.farkle.new_round = False
+                    number_rounds += 1
                 # If not all the dice are zero, it's not the end of a round
                 else:
                     if roll_score is not 0:
@@ -59,7 +64,7 @@ class GameRunner:
                 temp_memory.append(roll_score)
                 temp_memory.append(fake_score)
                 self.player.memory.add_sample(temp_memory)
-                number_rounds += 1
+
             plot_number_rounds.append(number_rounds)
             number_rounds = 0
             # WE NEED TO REPLAY AKA TRAIN
@@ -72,6 +77,8 @@ class GameRunner:
             if game_count > 500:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
+        # average_round_score_per_game = median(plot_game_score)
+        print("median game score", median(plot_game_score))
         plt.plot(average_round_score_per_game)
         plt.title("Average round score per game")
         plt.ylabel("Average Round Score")
@@ -87,8 +94,5 @@ class GameRunner:
         # plot.ylabel("Game Score")
         # plot.xlabel("Turn")
         # plot.show()
-        print("Average roll_score per game: " + str(total_score / (game_count * 100)))
-        with open("Output.csv", 'w') as file:
-            wr = csv.writer(file, delimiter=',', dialect='excel')
-            wr.writerow(average_round_score_per_game)
-            wr.writerow(plot_game_score)
+        print("Average roll_score per game with NN: " + str(total_score / (game_count * 100)))
+        print("median round score with NN", median(round_scores))

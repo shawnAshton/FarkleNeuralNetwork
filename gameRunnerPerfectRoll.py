@@ -29,7 +29,7 @@ class GameRunner:
                 self.farkle.randomize_dice()
                 valid = False
                 # The player makes a decision:
-                reRoll = self.player.freeze(self.farkle.reRoll)
+                reRoll = self.player.perfect_roll(self.farkle.dice)
                 while not valid:
                     valid = self.farkle.is_valid_move(reRoll)  # player... use brain
                     if any(reRoll):
@@ -92,5 +92,5 @@ class GameRunner:
         # plot.ylabel("Game Score")
         # plot.xlabel("Turn")
         # plot.show()
-        print("Average roll_score per game with random: " + str(total_score / (game_count * 100)))
-        print("median round score with random", median(round_scores))
+        print("Average roll_score per game with perfect roll: " + str(total_score / (game_count * 100)))
+        print("median round score with perfect roll", median(round_scores))
