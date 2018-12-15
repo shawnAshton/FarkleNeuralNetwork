@@ -1,5 +1,5 @@
 import random
-
+import rules
 from collections import Counter
 
 import model
@@ -12,6 +12,44 @@ class Player:
         self.roundScore = 0
         self.neuralNet = model.Model(12, 6, 500)
         self.memory = memory.Memory(80000)
+    
+    
+    def score_roll(self, dice, reRoll):
+        """
+        Scores the dice.
+        1 = 100
+        5 = 50
+        Triples = tripleDie * 100 (Ex. 4,4,4 = 400)
+        Triple 1 = 1000
+        Everything else = 0
+        :return:
+        The score of the dice roll
+        """
+        dice_to_score = []
+        for i in range(len(dice)):
+            if reRoll[i] == 0:
+                dice_to_score.append(dice[i])
+        count = Counter(dice_to_score)
+        score = 0
+        if len(dice_to_score) > 0:
+            if count[1] >= 3:
+                # score += 1000
+                # score += (count[1] - 3) * 100
+                score += (count[1]) * 100
+                score += count[2] * 50
+            elif count[2] >= 3:
+                # score += 500
+                # score += (count[2] - 3) * 50
+                score += (count[2]) * 50
+                score += count[1] * 100
+            if count.most_common(1)[0][1] >= 3:
+                score += count.most_common(1)[0][0] * 100
+                score += count[1] * 100
+                score += count[2] * 50
+            else:
+                score += count[2] * 50
+                score += count[1] * 100
+        return score
 
     def freeze(self, frozen):
         """
@@ -26,7 +64,7 @@ class Player:
                 freeze_dice.append(0)
         return freeze_dice
 
-    def perfect_roll(self, state):
+    def perfect_roll(self, state, frozen):
         single_target = [1, 1, 1, 1, 1, 1]
         for j, die in enumerate(state):
             if state[j] is 2:
@@ -45,9 +83,26 @@ class Player:
                         if state[l] is k:
                             single_target[l] = 0
 
-            # but should you really roll?
+            # make stuff stay frozen
+            for i in range(0, len(frozen)):
+                if frozen[i] < single_target[i]:
+                    single_target[i] = 0
+
+            # how many were frozen
+            count_of_were_frozen = 0
+            for i, game_die in enumerate(frozen):
+                if game_die == 0:
+                    count_of_were_frozen += 1
+            # how many are frozen
+            count_of_are_now_frozen = 0
+            for i, game_die in enumerate(single_target):
+                if game_die == 0:
+                    count_of_are_now_frozen += 1
+
+            # but should you really roll, is your score higher, did you freeze another die
             single_target_count = Counter(single_target)
-            if single_target_count[1] < 3:
+            if (single_target_count[1] < 3) or count_of_are_now_frozen <= count_of_were_frozen or\
+                    self.score_roll(state, single_target) < self.score_roll(state, frozen):
                 single_target = [0, 0, 0, 0, 0, 0]
         return single_target
 
