@@ -8,13 +8,10 @@ import matplotlib.pyplot as plt
 
 
 class GameRunner:
-    def __init__(self, player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
+    def __init__(self, player, farkle, tensor_session):
         self.player = player
         self.farkle = farkle
         self.tensor_session = tensor_session
-        self.learning_rate_decay = learning_rate_decay
-        self.learning_rate_start = learning_rate_start
-        self.learning_rate_min = learning_rate_min
 
     def run(self):
         counted_once = False

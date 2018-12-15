@@ -7,13 +7,10 @@ import csv
 import matplotlib.pyplot as plt
 
 class GameRunner:
-    def __init__(self, player, farkle, tensor_session, learning_rate_decay, learning_rate_start, learning_rate_min):
+    def __init__(self, player, farkle, tensor_session):
         self.player = player
         self.farkle = farkle
         self.tensor_session = tensor_session
-        self.learning_rate_decay = learning_rate_decay
-        self.learning_rate_start = learning_rate_start
-        self.learning_rate_min = learning_rate_min
 
     def run(self):
         counted_once = False
@@ -23,12 +20,17 @@ class GameRunner:
         count_of_predictions_in_last_50_games = 0
         count_of_total_predictions = 0
         game_count = 0
+        game_iterations = 1000
         total_score = 0
         max_game_score = 10000
         number_rounds = 0
         plot_game_score = []
         plot_number_rounds = []
         round_scores = []
+        plot_of_count_of_times_needed_help = []
+        plot_of_count_of_times_made_decision = []
+        count_of_decisions_per_game = 0
+        count_of_helped_per_game = 0
         actual_final_round_score = 0
         count_of_times_needing_help = 0
         count_of_help_needed_last_3_games = 0
@@ -45,14 +47,15 @@ class GameRunner:
                 # The player makes a decision:
                 reRoll_test = self.player.perfect_roll(self.farkle.dice, self.farkle.reRoll)
                 reRoll = self.player.decide(self.farkle.dice, self.farkle.reRoll, self.tensor_session)
+                count_of_decisions_per_game += 1
                 count_of_total_predictions += 1
                 if reRoll_test == reRoll:
                     count_of_same_predictions += 1
                 if game_count < 50:
                     count_of_predictions_in_first_50_games += 1
-                if game_count > 450:
+                if game_count > game_iterations - 50:
                     count_of_predictions_in_last_50_games += 1
-                if game_count >= 498:  # 498, 499, 500
+                if game_count >= game_iterations - 3:  # 498, 499, 500
                     count_of_decisions_last_3_games += 1
                 if game_count < 3:  # 0,1,2
                     count_of_decisions_first_3_games += 1
@@ -67,13 +70,13 @@ class GameRunner:
                         if valid:
                            self.farkle.set_reRoll(reRoll)
                         else:
-
                             if not counted_once:
+                                count_of_helped_per_game += 1
                                 count_of_times_needing_help += 1
                                 counted_once = True
                                 if game_count < 3:
                                     count_of_help_needed_first_3_games += 1
-                                if game_count >= 498:
+                                if game_count >= game_iterations - 3:
                                     count_of_help_needed_last_3_games += 1
                             reRoll = self.player.perfect_roll(self.farkle.dice, self.farkle.reRoll)
                 counted_once = False
@@ -109,6 +112,10 @@ class GameRunner:
                 temp_memory.append(fake_score)
                 self.player.memory.add_sample(temp_memory)
 
+            plot_of_count_of_times_made_decision.append(count_of_decisions_per_game)
+            plot_of_count_of_times_needed_help.append(count_of_helped_per_game)
+            count_of_decisions_per_game = 0
+            count_of_helped_per_game = 0
             plot_number_rounds.append(number_rounds)
             number_rounds = 0
             # WE NEED TO REPLAY AKA TRAIN
@@ -118,7 +125,7 @@ class GameRunner:
             self.player.gameScore = 0
             game_count += 1
 
-            if game_count >= 500:
+            if game_count >= game_iterations:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(100, len(plot_game_score))]
         # average_round_score_per_game = median(plot_game_score)
@@ -134,6 +141,11 @@ class GameRunner:
         # print("count_of_predictions_in_last_50_games: ", count_of_predictions_in_last_50_games)
         print("Count of same predictions is: ", count_of_same_predictions, " / ", count_of_total_predictions,
               " or as a percent ", count_of_same_predictions / count_of_total_predictions * 100)
+        plt.plot([plot_of_count_of_times_needed_help[i] / plot_of_count_of_times_made_decision[i] * 100 for i in range(len(plot_of_count_of_times_needed_help))])
+        plt.title("Percentage of helped")
+        plt.ylabel("Percentage")
+        plt.xlabel("Number of games")
+        plt.show()
         # plt.plot(average_round_score_per_game)
         # plt.title("Average round score per game")
         # plt.ylabel("Average Round Score")

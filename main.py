@@ -9,15 +9,11 @@ if __name__ == "__main__":
     farkle = rules.Game()
     player = greedy_player.Player()
 
-    learning_rate_decay = .001
-    learning_rate_start = 100
-    learning_rate_min = 0.1
 
     with tf.Session() as tensor_session:
         init = tf.global_variables_initializer()
         tensor_session.run(init)
-        runner = gameRunner.GameRunner(player, farkle, tensor_session,
-                                           learning_rate_decay, learning_rate_start, learning_rate_min)
+        runner = gameRunner.GameRunner(player, farkle, tensor_session)
         runner.run()
 
     print("\n")
@@ -26,18 +22,16 @@ if __name__ == "__main__":
     with tf.Session() as tensor_session:
         init = tf.global_variables_initializer()
         tensor_session.run(init)
-        runner = gameRunnerRandom.GameRunner(player, farkle, tensor_session,
-                                           learning_rate_decay, learning_rate_start, learning_rate_min)
+        runner = gameRunnerRandom.GameRunner(player, farkle, tensor_session)
         runner.run()
 
-    print("\n")
-
-    farkle = rules.Game()
-    player = greedy_player.Player()
-    with tf.Session() as tensor_session:
-        init = tf.global_variables_initializer()
-        tensor_session.run(init)
-        runner = gameRunnerPerfectRoll.GameRunner(player, farkle, tensor_session,
-                                           learning_rate_decay, learning_rate_start, learning_rate_min)
-        runner.run()
+    # print("\n")
+    #
+    # farkle = rules.Game()
+    # player = greedy_player.Player()
+    # with tf.Session() as tensor_session:
+    #     init = tf.global_variables_initializer()
+    #     tensor_session.run(init)
+    #     runner = gameRunnerPerfectRoll.GameRunner(player, farkle, tensor_session)
+    #     runner.run()
 
