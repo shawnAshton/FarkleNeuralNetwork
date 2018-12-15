@@ -59,14 +59,16 @@ class Game:
         score = 0
         if len(dice_to_score) > 0:
             if count[1] >= 3:
-                score += 1000
-                score += (count[1] - 3) * 100
+                # score += 1000
+                # score += (count[1] - 3) * 100
+                score += (count[1]) * 100
                 score += count[2] * 50
             elif count[2] >= 3:
-                score += 500
-                score += (count[2] - 3) * 50
+                # score += 500
+                # score += (count[2] - 3) * 50
+                score += (count[2]) * 50
                 score += count[1] * 100
-            elif count.most_common(1)[0][1] >= 3:
+            if count.most_common(1)[0][1] >= 3:
                 score += count.most_common(1)[0][0] * 100
                 score += count[1] * 100
                 score += count[2] * 50
@@ -88,6 +90,7 @@ class Game:
 
         # Special case: Restarting round
         if not any(frozen):
+            # self.randomize_dice()  # get a new set of dice and reRoll values
             self.reRoll = [1, 1, 1, 1, 1, 1]
             self.new_round = True
             return True
@@ -131,4 +134,12 @@ class Game:
         self.reRoll = frozen
 
     def randomize_frozen(self):
-        return [random.randint(0,1) for i in range(6)]
+        to_return = []
+        for i, game_die in enumerate(self.reRoll):
+            if game_die == 0:
+                to_return.append(0)
+            else:
+                to_return.append(random.randint(0, 1))
+        return to_return
+        # return [0, 0, 0, 0, 0, 0]
+        # return [random.randint(0,1) for i in range(6)]
