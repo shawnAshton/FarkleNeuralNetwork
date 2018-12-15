@@ -76,7 +76,7 @@ class GameRunner:
 
             if game_count > 500:
                 playing = False
-        average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
+        average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(100, len(plot_game_score))]
         # average_round_score_per_game = median(plot_game_score)
         print("median game score", median(plot_game_score))
         plt.plot(average_round_score_per_game)

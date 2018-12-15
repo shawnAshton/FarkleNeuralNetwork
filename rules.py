@@ -116,7 +116,7 @@ class Game:
                 # if game frozen is not 0... worry about the index......
                 if game_die != 0 and frozen[i] == 0:
                     # this was just FROZEN is it a scoring dice??
-                    if self.dice[i] == 1 or self.dice[i] == 5:
+                    if self.dice[i] == 1 or self.dice[i] == 2:
                         return True
 
             # Check to see if we have a triple
