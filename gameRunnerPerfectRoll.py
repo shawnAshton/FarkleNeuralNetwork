@@ -30,6 +30,10 @@ class GameRunner:
         round_scores = []
         actual_final_round_score = 0
         count_of_times_needing_help = 0
+        count_of_help_needed_last_3_games = 0
+        count_of_decisions_last_3_games = 0
+        count_of_help_needed_first_3_games = 0
+        count_of_decisions_first_3_games = 0
         while playing:
             self.farkle.randomize_dice()
             self.farkle.reRoll = [1, 1, 1, 1, 1, 1]
@@ -47,6 +51,10 @@ class GameRunner:
                     count_of_predictions_in_first_50_games += 1
                 if game_count > 450:
                     count_of_predictions_in_last_50_games += 1
+                if game_count >= 498:  # 498, 499, 500
+                    count_of_decisions_last_3_games += 1
+                if game_count < 3:  # 0,1,2
+                    count_of_decisions_first_3_games += 1
 
                 while not valid:
                     wrong_answer = False
@@ -61,6 +69,10 @@ class GameRunner:
                         else:
                             wrong_answer = True
                             count_of_times_needing_help += 1
+                            if game_count < 3:
+                                count_of_help_needed_first_3_games += 1
+                            if game_count >= 498:
+                                count_of_help_needed_last_3_games += 1
                             reRoll = self.farkle.randomize_frozen()
 
                 roll_score = self.farkle.score_roll(self.farkle.dice, self.farkle.reRoll)
@@ -111,6 +123,8 @@ class GameRunner:
                 playing = False
         average_round_score_per_game = [plot_game_score[i] / plot_number_rounds[i] for i in range(len(plot_game_score))]
         # average_round_score_per_game = median(plot_game_score)
+        print("in the first 3 rounds i needed help: ", count_of_help_needed_first_3_games , " when I made this many decisions...", count_of_decisions_first_3_games)
+        print("in the last 3 rounds i needed help: ", count_of_help_needed_last_3_games, " when I made this many decisions...", count_of_decisions_last_3_games)
         print("times needed help in order to function, ", count_of_times_needing_help)
         print("count_of_predictions_in_first_50_games: ", count_of_predictions_in_first_50_games)
         print("count_of_predictions_in_last_50_games: ", count_of_predictions_in_last_50_games)
