@@ -90,6 +90,7 @@ class Game:
 
         # Special case: Restarting round
         if not any(frozen):
+            # self.randomize_dice()  # get a new set of dice and reRoll values
             self.reRoll = [1, 1, 1, 1, 1, 1]
             self.new_round = True
             return True
@@ -133,4 +134,12 @@ class Game:
         self.reRoll = frozen
 
     def randomize_frozen(self):
-        return [random.randint(0,1) for i in range(6)]
+        to_return = []
+        for i, game_die in enumerate(self.reRoll):
+            if game_die == 0:
+                to_return.append(0)
+            else:
+                to_return.append(random.randint(0, 1))
+        return to_return
+        # return [0, 0, 0, 0, 0, 0]
+        # return [random.randint(0,1) for i in range(6)]
