@@ -16,14 +16,14 @@ if __name__ == "__main__":
         runner = gameRunner.GameRunner(player, farkle, tensor_session)
         runner.run()
 
-    print("\n")
-    farkle = rules.Game()
-    player = greedy_player.Player()
-    with tf.Session() as tensor_session:
-        init = tf.global_variables_initializer()
-        tensor_session.run(init)
-        runner = gameRunnerRandom.GameRunner(player, farkle, tensor_session)
-        runner.run()
+    # print("\n")
+    # farkle = rules.Game()
+    # player = greedy_player.Player()
+    # with tf.Session() as tensor_session:
+    #     init = tf.global_variables_initializer()
+    #     tensor_session.run(init)
+    #     runner = gameRunnerRandom.GameRunner(player, farkle, tensor_session)
+    #     runner.run()
 
     # print("\n")
     #

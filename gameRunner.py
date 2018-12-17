@@ -20,7 +20,7 @@ class GameRunner:
         count_of_predictions_in_last_50_games = 0
         count_of_total_predictions = 0
         game_count = 0
-        game_iterations = 1000
+        game_iterations = 1500
         total_score = 0
         max_game_score = 10000
         number_rounds = 0
