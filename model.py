@@ -22,21 +22,21 @@ class Model:
         self._define_model()
 
     def _define_model(self):
-        self._states = tf.placeholder(shape=[None, self.num_states], dtype=tf.float32)
-        self._q_s_a = tf.placeholder(shape=[None, self.num_actions], dtype=tf.float32)
+        self._states = tf.compat.v1.placeholder(shape=[None, self.num_states], dtype=tf.float32)
+        self._q_s_a = tf.compat.v1.placeholder(shape=[None, self.num_actions], dtype=tf.float32)
 
         # Create dense layers
-        fc1 = tf.layers.dense(self._states, 12, activation=tf.nn.relu)
-        fc2 = tf.layers.dense(fc1, 18, activation=tf.nn.relu)
-        fc3 = tf.layers.dense(fc2, 18, activation=tf.nn.relu)
-        fc4 = tf.layers.dense(fc3, 18, activation=tf.nn.relu)
-        fc5 = tf.layers.dense(fc4, 18, activation=tf.nn.relu)
-        fc6 = tf.layers.dense(fc5, 18, activation=tf.nn.relu)
-        fc7 = tf.layers.dense(fc6, 12, activation=tf.nn.relu)
-        self._logits = tf.layers.dense(fc7, self.num_actions, activation=tf.nn.sigmoid)
+        fc1 = tf.compat.v1.layers.dense(self._states, 12, activation=tf.nn.relu)
+        fc2 = tf.compat.v1.layers.dense(fc1, 18, activation=tf.nn.relu)
+        fc3 = tf.compat.v1.layers.dense(fc2, 18, activation=tf.nn.relu)
+        fc4 = tf.compat.v1.layers.dense(fc3, 18, activation=tf.nn.relu)
+        fc5 = tf.compat.v1.layers.dense(fc4, 18, activation=tf.nn.relu)
+        fc6 = tf.compat.v1.layers.dense(fc5, 18, activation=tf.nn.relu)
+        fc7 = tf.compat.v1.layers.dense(fc6, 12, activation=tf.nn.relu)
+        self._logits = tf.compat.v1.layers.dense(fc7, self.num_actions, activation=tf.nn.sigmoid)
         loss = tf.losses.mean_squared_error(self._q_s_a, self._logits)
-        self._optimizer = tf.train.AdamOptimizer().minimize(loss)
-        self._var_init = tf.global_variables_initializer()
+        self._optimizer = tf.compat.v1.train.AdamOptimizer().minimize(loss)
+        self._var_init = tf.compat.v1.global_variables_initializer()
 
     def predict_one(self, state, sess):
         return sess.run(self._logits, feed_dict={self._states: state.reshape(1, self.num_states)})
